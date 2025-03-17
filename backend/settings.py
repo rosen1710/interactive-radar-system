@@ -1,4 +1,4 @@
-import os
+import os, time
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
@@ -65,6 +65,13 @@ def load_settings():
 
 db_engine = create_engine(f"postgresql+psycopg2://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_DB_HOST')}:{os.getenv('POSTGRES_DB_PORT')}/{os.getenv('POSTGRES_DB')}")
 
-Base.metadata.create_all(db_engine) # Creates all tables that don't exist in the database
+while True:
+    try:
+        Base.metadata.create_all(db_engine) # Creates all tables that don't exist in the database
+        print("Connection to database was successfully established and all tables were created or already exist.")
+        break
+    except:
+        print("Failed to connect to database. Retrying in 2 seconds...")
+        time.sleep(2)
 
 load_settings()
