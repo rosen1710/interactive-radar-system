@@ -192,30 +192,57 @@ function RadarPage() {
         continue;
       }
 
-      const iconUrl = "images/aircraft_marker.webp";
-      const iconSize = [30, 30];
+      let iconUrl = "images/aircraft_marker_solid.png";
+      let iconSize = [30, 30];
       // const isGroundVehicle = flight.callsign === "GRND";
-      // const iconUrl = isGroundVehicle
+      // let iconUrl = isGroundVehicle
       //   ? "images/ground_vehicle_marker.webp"
       //   : "images/aircraft_marker.webp";
-      // const iconSize = isGroundVehicle ? [20, 20] : [30, 30];
+      // let iconSize = isGroundVehicle ? [20, 20] : [30, 30];
 
       if (flight.instructions !== null) {
+        let instructionsStatus = "ready";
+        let instructionsOwner = "my";
+        if (flight.instructions.atc_user_id !== context.kc.subject) {
+          instructionsOwner = "other";
+        }
+
         if (flight.instructions.altitude_valid === false) {
           if (new Date() > (new Date(flight.instructions.altitude_due.split("GMT")[0]))) {
-            addWarningInListIfNotRemembered(newWarnings, flight.icao, flight.callsign, "altitude", `${flight.instructions.altitude} feet`, rememberedWarningsIntervalInSeconds);
+            if ((flight.instructions.atc_user_id === context.kc.subject) || (context.kc.hasResourceRole(context.adminUserRole, context.adminUserResource))) {
+              addWarningInListIfNotRemembered(newWarnings, flight.icao, flight.callsign, "altitude", `${flight.instructions.altitude} feet`, rememberedWarningsIntervalInSeconds);
+            }
+            instructionsStatus = "warning";
+          }
+          else {
+            instructionsStatus = "processing";
           }
         }
+
         if (flight.instructions.ground_speed_valid === false) {
           if (new Date() > (new Date(flight.instructions.ground_speed_due.split("GMT")[0]))) {
-            addWarningInListIfNotRemembered(newWarnings, flight.icao, flight.callsign, "ground speed", `${flight.instructions.ground_speed} knots`, rememberedWarningsIntervalInSeconds);
+            if ((flight.instructions.atc_user_id === context.kc.subject) || (context.kc.hasResourceRole(context.adminUserRole, context.adminUserResource))) {
+              addWarningInListIfNotRemembered(newWarnings, flight.icao, flight.callsign, "ground speed", `${flight.instructions.ground_speed} knots`, rememberedWarningsIntervalInSeconds);
+            }
+            instructionsStatus = "warning";
+          }
+          else {
+            instructionsStatus = "processing";
           }
         }
+
         if (flight.instructions.track_valid === false) {
           if (new Date() > (new Date(flight.instructions.track_due.split("GMT")[0]))) {
-            addWarningInListIfNotRemembered(newWarnings, flight.icao, flight.callsign, "track", `${flight.instructions.track}°`, rememberedWarningsIntervalInSeconds);
+            if ((flight.instructions.atc_user_id === context.kc.subject) || (context.kc.hasResourceRole(context.adminUserRole, context.adminUserResource))) {
+              addWarningInListIfNotRemembered(newWarnings, flight.icao, flight.callsign, "track", `${flight.instructions.track}°`, rememberedWarningsIntervalInSeconds);
+            }
+            instructionsStatus = "warning";
+          }
+          else {
+            instructionsStatus = "processing";
           }
         }
+        iconUrl = "images/aircraft_marker_" + instructionsOwner + "_" + instructionsStatus + ".png";
       }
 
       try {
@@ -372,7 +399,9 @@ function RadarPage() {
   };
 
   function bellNotifier(messageInnerHTML) {
-    playBellSound();
+    if (navigator.userActivation.hasBeenActive) {
+      playBellSound();
+    }
     setWarningMessageInnerHTML(messageInnerHTML);
     setWarningMessageDivDisplay("block");
   };
