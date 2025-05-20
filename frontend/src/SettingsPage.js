@@ -101,7 +101,7 @@ function SettingsPage() {
   }
 
   return (
-    <div className="App">
+    <div className="page-container">
       <div style={{ display: "flex", justifyContent: "right", margin: "10px" }}>
         <Link to="/">Back to Radar Page</Link>
         {context.kc.hasResourceRole(context.adminUserRole, context.adminUserResource) ? (

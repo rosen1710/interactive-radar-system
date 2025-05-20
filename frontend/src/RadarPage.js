@@ -193,12 +193,12 @@ function RadarPage() {
       }
 
       let iconUrl = "images/aircraft_marker_solid.png";
-      let iconSize = [30, 30];
+      let iconSize = [32, 32];
       // const isGroundVehicle = flight.callsign === "GRND";
       // let iconUrl = isGroundVehicle
       //   ? "images/ground_vehicle_marker.webp"
       //   : "images/aircraft_marker.webp";
-      // let iconSize = isGroundVehicle ? [20, 20] : [30, 30];
+      // let iconSize = isGroundVehicle ? [20, 20] : [32, 32];
 
       if (flight.instructions !== null) {
         let instructionsStatus = "ready";
@@ -247,7 +247,7 @@ function RadarPage() {
 
       try {
         const flightMarker = L.marker([flight.latitude, flight.longitude], {
-          icon: createRotatedIcon(flight.track, iconUrl, iconSize, `<p class="map-label-above-icon">${(flight.callsign !== null) ? flight.callsign : ""}</p>`),
+          icon: createRotatedIcon(flight.track, iconUrl, iconSize, `<p class="map-label-below-icon">${(flight.callsign !== null) ? flight.callsign : ""}</p>`),
           title: flight.callsign,
         }).addTo(map);
 
@@ -455,8 +455,8 @@ function RadarPage() {
   }
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", justifyContent: "right", margin: "10px" }}>
+    <div className="container">
+      <div className="navbar">
         {context.kc.hasResourceRole(context.adminUserRole, context.adminUserResource) ? (
           <div>
             <Link to="/settings">Manage system settings</Link>
@@ -466,19 +466,19 @@ function RadarPage() {
         <a href={`${context.kcOptions.url}realms/${context.kcOptions.realm}/account`} target="_blank" rel="noreferrer" style={{ marginLeft: "10px" }}>Manage your account</a>
         <button onClick={() => context.kc.logout()} style={{ marginLeft: "10px" }}>Logout</button>
       </div>
-      <div id="map" style={{ height: "55%" }}></div>
+      <div id="map"></div>
       <h2 style={{ margin: "10px", paddingTop: "5px", borderTop: "1px solid #ccc" }}>Flight Information</h2>
-      <div id="flight-info" style={{ display: "flex", height: "45%", padding: "10px", border: "0", overflowY: "auto" }}>
-        <div id="flight-details" style={{ display: "flex" }} dangerouslySetInnerHTML={{ __html: flightDetails }}></div>
-        <div id="flight-options" style={{ display: flightOptionsDivDisplay, marginLeft: "10px" }}>
+      <div id="flight-info">
+        <div id="flight-details" dangerouslySetInnerHTML={{ __html: flightDetails }}></div>
+        <div id="flight-options" style={{ display: flightOptionsDivDisplay }}>
           { spectatedFlightControllerUser === null ? (
-            <button onClick={controlFlight} style={{ height: "20px" }}>Control this flight</button>
+            <button className="control-flight-button" onClick={controlFlight}>Control this flight</button>
           ) : spectatedFlightControllerUser === context.kc.subject ? (
-            <button onClick={stopControllingFlight} style={{ height: "20px", marginBottom: "34px" }}>Stop controlling this flight</button>
+            <button className="control-flight-button" onClick={stopControllingFlight} style={{ marginBottom: "34px" }}>Stop controlling this flight</button>
           ) : (
-            <p style={{ height: "20px", marginBottom: "20px" }}>This flight is controlled by: {spectatedFlightControllerUser}</p>
+            <p className="controlled-by-label">This flight is controlled by: {spectatedFlightControllerUser}</p>
           )}
-          <div id="flight-controls" style={{ display: flightControlsDivDisplay, marginTop: "2px" }}>
+          <div id="flight-controls" style={{ display: flightControlsDivDisplay }}>
             <input type="number" value={instructedAltitude} readOnly={flightControlsReadOnly} onChange={(e) => {setInstructedAltitude(e.target.value); setFlightControlsSaveButtonDisplay("block")}} style={{ height: "14px", width: "100px" }}/>
             <button onClick={() => {if (instructedAltitude !== "") {setInstructedAltitude(""); setFlightControlsSaveButtonDisplay("block")}}} style={{ display: flightControlsReadOnly ? "none" : "inline-block", height: "18px", position: "relative", "top": "1px" }}>x</button> feet
             <br/>
