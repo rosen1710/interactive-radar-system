@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -492,10 +492,10 @@ function RadarPage() {
           </div>
         </div>
       </div>
-      <div id="warning-message-container" style={{ display: warningMessageDivDisplay, position: "fixed", top: "55%", left: "5%", width: "90%", height: "40%", borderRadius: "20px", backgroundColor: "#ded0ab" }}>
+      <div id="warning-message-container" style={{ display: warningMessageDivDisplay }}>
         <h1 style={{ margin: "20px", textAlign: "center" }}>Warning</h1>
-        <div id="warning-message-text" dangerouslySetInnerHTML={{ __html: warningMessageInnerHTML }} style={{ margin: "20px", height: "45%", overflowY: "auto" }}></div>
-        <button onClick={() => {setWarningMessageDivDisplay("none")}} style={{ position: "fixed", bottom: "8%", left: "45%", width: "10%" }}>OK</button>
+        <div id="warning-message-text" dangerouslySetInnerHTML={{ __html: warningMessageInnerHTML }}></div>
+        <button id="warning-ok-button" onClick={() => {setWarningMessageDivDisplay("none")}}>OK</button>
       </div>
     </div>
   );

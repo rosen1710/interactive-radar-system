@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "./Context";
 
@@ -7,6 +7,8 @@ function SettingsPage() {
 
   const context = useContext(Context);
 
+  const [flightDataDecoderHost, setFlightDataDecoderHost] = useState();
+  const [flightDataDecoderPort, setFlightDataDecoderPort] = useState();
   const [initialMapLatitude, setInitialMapLatitude] = useState();
   const [initialMapLongitude, setInitialMapLongitude] = useState();
   const [initialMapZoomLevel, setInitialMapZoomLevel] = useState();
@@ -45,6 +47,8 @@ function SettingsPage() {
       // console.error(error);
       return;
     }
+    setFlightDataDecoderHost(data.configuration.FLIGHT_DATA_HOST);
+    setFlightDataDecoderPort(data.configuration.FLIGHT_DATA_PORT);
     setInitialMapLatitude(data.configuration.INITIAL_MAP_LATITUDE);
     setInitialMapLongitude(data.configuration.INITIAL_MAP_LONGITUDE);
     setInitialMapZoomLevel(data.configuration.INITIAL_MAP_ZOOM_LEVEL);
@@ -71,6 +75,8 @@ function SettingsPage() {
         },
         body: JSON.stringify({
           "token": context.kc.token,
+          "FLIGHT_DATA_HOST": flightDataDecoderHost,
+          "FLIGHT_DATA_PORT": flightDataDecoderPort,
           "INITIAL_MAP_LATITUDE": initialMapLatitude,
           "INITIAL_MAP_LONGITUDE": initialMapLongitude,
           "INITIAL_MAP_ZOOM_LEVEL": initialMapZoomLevel,
@@ -114,36 +120,42 @@ function SettingsPage() {
       </div>
       <h1>System settings</h1>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", marginTop: "50px" }}>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set initial map latitude:</p>
-        <input type="number" value={initialMapLatitude} onChange={(e) => setInitialMapLatitude(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set initial map longitude:</p>
-        <input type="number" value={initialMapLongitude} onChange={(e) => setInitialMapLongitude(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set initial map zoom level:</p>
-        <input type="number" value={initialMapZoomLevel} onChange={(e) => setInitialMapZoomLevel(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set flights update time in seconds:</p>
-        <input type="number" value={radarFlightsUpdateTimeInSeconds} onChange={(e) => setRadarFlightsUpdateTimeInSeconds(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set maximum time interval between two messages before flight considered as lost:</p>
-        <input type="number" value={maxUpdateIntervalBeforeConsideredAsLost} onChange={(e) => setMaxUpdateIntervalBeforeConsideredAsLost(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set instruction validity time after flight is lost in seconds:</p>
-        <input type="number" value={instructionValidityTimeAfterFlightIsLost} onChange={(e) => setInstructionValidityTimeAfterFlightIsLost(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set Minimum Descent Altitude (MDA) in feet:</p>
-        <input type="number" value={minimumDescentAltitudeInFeet} onChange={(e) => setMinimumDescentAltitudeInFeet(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set maximum time for every 100 ft altitude change in seconds:</p>
-        <input type="number" value={maxTimeFor100FtAltitudeChangeInSeconds} onChange={(e) => setMaxTimeFor100FtAltitudeChangeInSeconds(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set maximum altitude tolerance in feet:</p>
-        <input type="number" value={altitudeToleranceInFeet} onChange={(e) => setAltitudeToleranceInFeet(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set maximum time for every 10 knots ground speed change in seconds:</p>
-        <input type="number" value={maxTimeFor10KnotsGroundSpeedChangeInSeconds} onChange={(e) => setMaxTimeFor10KnotsGroundSpeedChangeInSeconds(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set maximum ground speed tolerance in knots:</p>
-        <input type="number" value={groundSpeedToleranceInKnots} onChange={(e) => setGroundSpeedToleranceInKnots(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set maximum time for every 10 degrees track change in seconds:</p>
-        <input type="number" value={maxTimeFor10DegreesTrackChangeInSeconds} onChange={(e) => setMaxTimeFor10DegreesTrackChangeInSeconds(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set maximum track tolerance in degrees:</p>
-        <input type="number" value={trackToleranceInDegrees} onChange={(e) => setTrackToleranceInDegrees(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Set warning remember interval in seconds:</p>
-        <input type="number" value={warningRememberIntervalInSeconds} onChange={(e) => setWarningRememberIntervalInSeconds(e.target.value)} style={{ margin: "0 10px", width: "300px", height: "16px", alignSelf: "end" }}/>
-        <p style={{ margin: "0 10px", textAlign: "right" }}>Log all received aircraft messages:</p>
-        <input type="checkbox" checked={logAllAircraftMessages} onChange={(e) => {e.target.checked ? setLogAllAircraftMessages(1) : setLogAllAircraftMessages(0)}} style={{ margin: "0 10px", justifySelf: "left", width: "18px" }}/>
+        <p className="settings-label">Set initial map latitude:</p>
+        <input type="number" value={initialMapLatitude} onChange={(e) => setInitialMapLatitude(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set initial map longitude:</p>
+        <input type="number" value={initialMapLongitude} onChange={(e) => setInitialMapLongitude(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set initial map zoom level:</p>
+        <input type="number" value={initialMapZoomLevel} onChange={(e) => setInitialMapZoomLevel(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set flights update time in seconds:</p>
+        <input type="number" value={radarFlightsUpdateTimeInSeconds} onChange={(e) => setRadarFlightsUpdateTimeInSeconds(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set maximum time interval between two messages before flight considered as lost:</p>
+        <input type="number" value={maxUpdateIntervalBeforeConsideredAsLost} onChange={(e) => setMaxUpdateIntervalBeforeConsideredAsLost(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set instruction validity time after flight is lost in seconds:</p>
+        <input type="number" value={instructionValidityTimeAfterFlightIsLost} onChange={(e) => setInstructionValidityTimeAfterFlightIsLost(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set Minimum Descent Altitude (MDA) in feet:</p>
+        <input type="number" value={minimumDescentAltitudeInFeet} onChange={(e) => setMinimumDescentAltitudeInFeet(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set maximum time for every 100 ft altitude change in seconds:</p>
+        <input type="number" value={maxTimeFor100FtAltitudeChangeInSeconds} onChange={(e) => setMaxTimeFor100FtAltitudeChangeInSeconds(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set maximum altitude tolerance in feet:</p>
+        <input type="number" value={altitudeToleranceInFeet} onChange={(e) => setAltitudeToleranceInFeet(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set maximum time for every 10 knots ground speed change in seconds:</p>
+        <input type="number" value={maxTimeFor10KnotsGroundSpeedChangeInSeconds} onChange={(e) => setMaxTimeFor10KnotsGroundSpeedChangeInSeconds(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set maximum ground speed tolerance in knots:</p>
+        <input type="number" value={groundSpeedToleranceInKnots} onChange={(e) => setGroundSpeedToleranceInKnots(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set maximum time for every 10 degrees track change in seconds:</p>
+        <input type="number" value={maxTimeFor10DegreesTrackChangeInSeconds} onChange={(e) => setMaxTimeFor10DegreesTrackChangeInSeconds(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set maximum track tolerance in degrees:</p>
+        <input type="number" value={trackToleranceInDegrees} onChange={(e) => setTrackToleranceInDegrees(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set warning remember interval in seconds:</p>
+        <input type="number" value={warningRememberIntervalInSeconds} onChange={(e) => setWarningRememberIntervalInSeconds(e.target.value)} className="settings-input"/>
+        <div className="page-delimiter"></div>
+        <div className="page-delimiter"></div>
+        <p className="settings-label">Set flight data decoder host:</p>
+        <input type="text" value={flightDataDecoderHost} onChange={(e) => setFlightDataDecoderHost(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Set flight data decoder port (or 0 to keep the dafault port):</p>
+        <input type="number" value={flightDataDecoderPort} onChange={(e) => setFlightDataDecoderPort(e.target.value)} className="settings-input"/>
+        <p className="settings-label">Log all received aircraft messages:</p>
+        <input type="checkbox" checked={logAllAircraftMessages} onChange={(e) => {e.target.checked ? setLogAllAircraftMessages(1) : setLogAllAircraftMessages(0)}} className="settings-checkbox"/>
       </div>
       <button onClick={saveConfiguration} style={{ margin: "40px" }}>Save</button>
     </div>

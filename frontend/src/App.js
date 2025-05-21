@@ -1,5 +1,3 @@
-import React from "react";
-import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Keycloak from "keycloak-js";
 import RadarPage from "./RadarPage";
