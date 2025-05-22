@@ -2,13 +2,13 @@ from datetime import datetime, timedelta
 from settings import *
 from models import *
 
-def is_valid_altitude(value):
+def is_valid_altitude_instruction(value):
+    return value >= configuration["MINIMUM_DESCENT_ALTITUDE_IN_FEET"]
+
+def is_valid_ground_speed_instruction(value):
     return value >= 0
 
-def is_valid_ground_speed(value):
-    return value >= 0
-
-def is_valid_track(value):
+def is_valid_track_instruction(value):
     return value >= 0 and value < 360
 
 def calculate_track_diff(track_1, track_2):

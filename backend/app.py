@@ -68,15 +68,15 @@ def control_flight(flight_icao):
                 new_instructions.track_timestamp = prev_instructions.track_timestamp
 
         if new_instructions.altitude is not None:
-            if not validator.is_valid_altitude(new_instructions.altitude) or new_instructions.altitude < configuration["MINIMUM_DESCENT_ALTITUDE_IN_FEET"]:
+            if not validator.is_valid_altitude_instruction(new_instructions.altitude):
                 return make_response({"message": f"Instructed altitude of {new_instructions.altitude} feet is not valid, must be at least {configuration['MINIMUM_DESCENT_ALTITUDE_IN_FEET']} feet (MDA)!"}, 400)
 
         if new_instructions.ground_speed is not None:
-            if not validator.is_valid_ground_speed(new_instructions.ground_speed):
+            if not validator.is_valid_ground_speed_instruction(new_instructions.ground_speed):
                 return make_response({"message": f"Instructed ground speed of {new_instructions.ground_speed} knots is not valid!"}, 400)
 
         if new_instructions.track is not None:
-            if not validator.is_valid_track(new_instructions.track):
+            if not validator.is_valid_track_instruction(new_instructions.track):
                 return make_response({"message": f"Instructed track of {new_instructions.track}° is not valid!"}, 400)
 
         session.add(new_instructions)
