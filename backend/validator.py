@@ -3,10 +3,10 @@ from settings import *
 from models import *
 
 def is_valid_altitude_instruction(value):
-    return value >= configuration["MINIMUM_DESCENT_ALTITUDE_IN_FEET"]
+    return value >= configuration["MINIMUM_DESCENT_ALTITUDE_IN_FEET"] and value <= 50000
 
 def is_valid_ground_speed_instruction(value):
-    return value >= 0
+    return value >= 0 and value <= 1000
 
 def is_valid_track_instruction(value):
     return value >= 0 and value < 360

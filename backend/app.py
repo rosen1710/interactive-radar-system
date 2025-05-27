@@ -69,11 +69,11 @@ def control_flight(flight_icao):
 
         if new_instructions.altitude is not None:
             if not validator.is_valid_altitude_instruction(new_instructions.altitude):
-                return make_response({"message": f"Instructed altitude of {new_instructions.altitude} feet is not valid, must be at least {configuration['MINIMUM_DESCENT_ALTITUDE_IN_FEET']} feet (MDA)!"}, 400)
+                return make_response({"message": f"Instructed altitude of {new_instructions.altitude} feet is not valid, must be at least {configuration['MINIMUM_DESCENT_ALTITUDE_IN_FEET']} feet (MDA) but not more than 50000 feet!"}, 400)
 
         if new_instructions.ground_speed is not None:
             if not validator.is_valid_ground_speed_instruction(new_instructions.ground_speed):
-                return make_response({"message": f"Instructed ground speed of {new_instructions.ground_speed} knots is not valid!"}, 400)
+                return make_response({"message": f"Instructed ground speed of {new_instructions.ground_speed} knots is not valid, must be between 0 and 1000 knots!"}, 400)
 
         if new_instructions.track is not None:
             if not validator.is_valid_track_instruction(new_instructions.track):
